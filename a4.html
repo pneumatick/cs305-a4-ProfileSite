@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {text-align: center;}
+        #findDetails {float: left; width: 50%; background-color: floralwhite; color: darkslategray;}
+        #embeddedApp {float: left; width: 50%;}
+        input {width: 120px;}
+    </style>
+</head>
+<body>
+    <div id="embeddedApp">
+        <iframe src="https://thunkable.site/w/le1uSYW434OvJrSSGaQYT" 
+        title="Chop Down the Tree Thunkable App" height = 1000 width = 500
+        frameBorder = 0></iframe>
+    </div>
+
+    <div id="findDetails">
+        <h1>Find by ID</h1>
+        <h4>ID</h4>
+        <input id="findID" type="text"> <br><br>
+        <button id="find">FIND</button> <br><br>
+        <button id="profile1">Profile 1</button>
+        <button id="profile2">Profile 2</button>
+        <h3 id="findName" type="text"></h3>
+        <h3 id="findAge" type="number"></h3> 
+        <h3 id="findBirthday" type="text"></h3>
+        <h3 id="findColor" type="text"></h3> <br><br>
+        <img id="findPhoto">
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyDi7SMLtl44okhIodgvFzveqz3UR_KVMxw",
+            authDomain: "loginapp-f73e6.firebaseapp.com",
+            databaseURL: "https://loginapp-f73e6-default-rtdb.firebaseio.com",
+            projectId: "loginapp-f73e6",
+            storageBucket: "loginapp-f73e6.appspot.com",
+            messagingSenderId: "386423923268",
+            appId: "1:386423923268:web:136543215ee2ab85c45211",
+            measurementId: "G-D9DD1E146Y"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);   
+
+        import {getDatabase, ref, get, set, child, update, remove}
+        from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js"
+
+        const db = getDatabase();
+
+        // Header and image elements
+        var findID = document.querySelector("#findID");
+        var findName = document.querySelector("#findName");
+        var findAge = document.querySelector("#findAge");
+        var findBirthday = document.querySelector("#findBirthday");
+        var finPhoto = document.querySelector("#findPhoto");
+
+        // Button elements
+        var findBtn = document.querySelector("#find");
+        var profileBtn_1 = document.querySelector("#profile1");
+        var profileBtn_2 = document.querySelector("#profile2");
+
+        // Hardcoded profile IDs
+        const precon_profiles = ['A0lFbOs2VBUfQh1NYzI9DU1hOsy2', 'oogZ5dN4mNU2EFR9nnP5X403hOv1'];
+
+        function FindData() {
+            const dbref = ref(db);
+
+            get(child(dbref, findID.value))
+            .then((snapshot)=>{
+                if(snapshot.exists()){
+                    findName.innerHTML = "Name: " + snapshot.val().name;
+                    findAge.innerHTML = "Age: " + snapshot.val().age;
+                    findBirthday.innerHTML = "Birthday: " + snapshot.val().birthday;
+                    findColor.innerHTML = "Color: " + snapshot.val().color;
+                } else {
+                    alert("No data found");
+                }
+            })
+            .catch((error)=>{
+                alert(error)
+            })
+            
+        }
+
+        // Function to find one of the two hardcoded profiles
+        function FindHardProfile() {
+            const dbref = ref(db);
+            var profile = '';
+
+            if (this.id == 'profile1') {
+                profile = precon_profiles[0];
+            }
+            else if (this.id == 'profile2') {
+                profile = precon_profiles[1];
+            }
+
+            get(child(dbref, profile))
+            .then((snapshot)=>{
+                if(snapshot.exists()){
+                    findName.innerHTML = "Name: " + snapshot.val().name;
+                    findAge.innerHTML = "Age: " + snapshot.val().age;
+                    findBirthday.innerHTML = "Birthday: " + snapshot.val().birthday;
+                    findColor.innerHTML = "Color: " + snapshot.val().color;
+                    findPhoto.src = snapshot.val().image;
+                } else {
+                    alert("No data found");
+                }
+            })
+            .catch((error)=>{
+                alert(error)
+            })
+        }
+
+        findBtn.addEventListener('click', FindData);
+        profileBtn_1.addEventListener('click', FindHardProfile);
+        profileBtn_2.addEventListener('click', FindHardProfile)
+
+      </script>
+</body>
+</html>
